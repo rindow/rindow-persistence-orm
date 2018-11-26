@@ -1,0 +1,43 @@
+{
+    "name": "rindow/rindow-persistence-orm",
+    "type": "library",
+    "description": "ORM persistence support",
+    "keywords": ["rindow","framework","orm"],
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": ">=5.3.3",
+        "interop-phpobjects/lenient-dao": "*",
+        "rindow/rindow-stdlib": "*",
+        "rindow/rindow-database-dao": "*"
+    },
+    "require-dev": {
+        "interop-phpobjects/lenient-dao": "*",
+        "rindow/rindow-stdlib": "*",
+        "rindow/rindow-container": "*",
+        "rindow/rindow-aop": "*",
+        "rindow/rindow-transaction": "*"
+    },
+    "suggest": {
+        "rindow/rindow-container": "It needs some service container",
+        "rindow/rindow-transaction": "It needs some transaction manager",
+        "rindow/rindow-persistence-ormshell": "It needs some orm manager"
+    },
+    "autoload": {
+        "psr-0": {
+            "Rindow\\Persistence\\Orm\\": "src/"
+        }
+    },
+
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://rindow.github.io/rindow-packagist/packages.json",
+            "options": {
+                "ssl": {
+                    "verify_peer": "true"
+                }
+            }
+        }
+    ],
+    "minimum-stability": "dev"
+}

@@ -2,16 +2,17 @@
 namespace Rindow\Persistence\Orm\Criteria;
 
 use Rindow\Persistence\Orm\Exception;
-use Rindow\Stdlib\Cache\CacheFactory;
+use Rindow\Stdlib\Cache\ConfigCache\ConfigCacheFactory;
 
 class CriteriaContainer
 {
     protected $criteriaBuilder;
     protected $criteriaMapper;
     protected $cache;
+    protected $configCacheFactory;
     protected $context;
 
-    public function __construct($criteriaMapper=null,$criteriaBuilder=null,$cache=null)
+    public function __construct($criteriaMapper=null,$criteriaBuilder=null,$cache=null,$configCacheFactory=null)
     {
         if($criteriaMapper)
             $this->setCriteriaMapper($criteriaMapper);
@@ -19,6 +20,8 @@ class CriteriaContainer
             $this->setCriteriaBuilder($criteriaBuilder);
         if($cache)
             $this->setCache($cache);
+        if($configCacheFactory)
+            $this->setConfigCacheFactory($configCacheFactory);
     }
 
     public function setCriteriaMapper($criteriaMapper)
@@ -39,6 +42,11 @@ class CriteriaContainer
     public function setCache($cache)
     {
         $this->cache = $cache;
+    }
+
+    public function setConfigCacheFactory($configCacheFactory)
+    {
+        $this->configCacheFactory = $configCacheFactory;
     }
 
     public function getCriteriaMapper()
@@ -64,7 +72,10 @@ class CriteriaContainer
     {
         if($this->cache)
             return $this->cache;
-        return $this->cache = CacheFactory::getInstance(__CLASS__);
+        if($this->configCacheFactory==null)
+            $this->configCacheFactory = new ConfigCacheFactory(array('enableCache'=>false));
+        $this->cache = $this->configCacheFactory->create(__CLASS__);
+        return $this->cache;
     }
 
     public function get($name,$builder)
@@ -76,11 +87,16 @@ class CriteriaContainer
             throw new Exception\DomainException('CriteriaMapper is not spacified.');
             
         $cm->setContext($this->getContext());
-        return $cache->get($name,null,
-            function ($cache,$offset,&$criteria) use ($cb,$cm,$builder) {
+        $criteria = $cache->getEx(
+            $name,
+            function ($cacheKey,$args) {
+                list($cb,$cm,$builder) = $args;
                 $c = call_user_func($builder,$cb);
                 $criteria = $cm->prepare($c);
-                return true;
-        });
+                return $criteria;
+            },
+            array($cb,$cm,$builder)
+        );
+        return $criteria;
     }
 }

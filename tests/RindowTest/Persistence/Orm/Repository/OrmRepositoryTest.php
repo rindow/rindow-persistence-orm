@@ -233,9 +233,6 @@ class Test extends TestCase
 {
     public function setUp()
     {
-        usleep( RINDOW_TEST_CLEAR_CACHE_INTERVAL );
-        \Rindow\Stdlib\Cache\CacheFactory::clearCache();
-        usleep( RINDOW_TEST_CLEAR_CACHE_INTERVAL );
     }
 
 	public function getRepository()
@@ -427,6 +424,7 @@ class Test extends TestCase
 					'Rindow\Persistence\Orm\Module' => true,
 					__NAMESPACE__.'\TestResourceModule'=>true,
 				),
+                'enableCache' => false,
 			),
             'container' => array(
                 'aliases' => array(

@@ -48,7 +48,6 @@ class Test extends TestCase
 {
     public function setup()
     {
-        \Rindow\Stdlib\Cache\CacheFactory::clearCache();
     }
 
     public function getConfig()
@@ -57,6 +56,7 @@ class Test extends TestCase
             'module_manager' => array(
                 'modules' => array(
                 ),
+                'enableCache' => false,
             ),
             'container' => array(
                 'aliases' => array(
@@ -70,6 +70,7 @@ class Test extends TestCase
                             'criteriaBuilder' => array('ref'=>__NAMESPACE__.'\TestCriteriaBuilder'),
                             'criteriaMapper'  => array('ref'=>__NAMESPACE__.'\TestCriteriaMapper'),
                             'context'   => array('ref'=>__NAMESPACE__.'\TestEntityManager'),
+                            'configCacheFactory' => array('ref'=>'ConfigCacheFactory'),
                         ),
                     ),
                     __NAMESPACE__.'\TestCriteriaBuilder' => array(
